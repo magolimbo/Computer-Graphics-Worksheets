@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflection on Affine and Viewing Transformations</title>
+</head>
+<body>
+    <h2>
+        <b>Reflect on the theory of affine transformations and viewing transformations by doing the following:</b>
+    </h2>
+    <ul>
+        <li>List the transformation matrices that you used in Parts 1 and 2 (use general expressions/functions rather than concrete numbers). [Angel 4.9, 5.3-5.5]</li>
+        <li>For each cube, write down a formula showing how the matrices were concatenated to become the current transformation matrix (CTM) that was used to transform the vertices in the vertex shader. [Angel 4.10-4.11]</li>
+    </ul>
+    <hr>
+    <h3>Part 1:</h3>
+    <ul>
+        <li>View Matrix (V): <code>V = lookAt(eye, at, up)</code></li>
+        <li>Projection Matrix (P): not explicitly defined (the default orthographic projection has been used)</li>
+        <li>Model Matrix (M): not explicitly defined (default cube)</li>
+        <li>The CTM is calculated as follows: <code>CTM = V</code></li>
+    </ul>
+    <h3>Part 2:</h3>
+    <ul>
+        <li><b>Cube 1 (1 point perspective):</b></li>
+        <ul>
+            <li>View Matrix (V): <code>V = lookAt(eye, at, up)</code></li>
+            <li>Projection Matrix (P): <code>P = perspective(fovy, aspect, near, far)</code></li>
+            <li>Model Matrix (M): <code>M = mat4(1)</code></li>
+        </ul>
+        <li><b>Cube 2 (2 point perspective):</b></li>
+        <ul>
+            <li>View Matrix (V): <code>V = translate(-1.5, 0.0, 0.0)</code></li>
+            <li>Projection Matrix (P): <code>P = perspective(fovy, aspect, near, far)</code></li>
+            <li>Model Matrix (M): <code>M = mat4(1)</code></li>
+        </ul>
+        <li><b>Cube 3 (3 point perspective):</b></li>
+        <ul>
+            <li>View Matrix (V): <code>V = mult(mult(rotateX(angx), rotateY(angY)), translate(x, y, z))</code></li>
+            <li>Projection Matrix (P): <code>P = perspective(fovy, aspect, near, far)</code></li>
+            <li>Model Matrix (M): <code>M = mat4(1)</code></li>
+        </ul>
+        <li>The CTM is calculated as follows: <code>CTM = P * V * M</code></li>
+    </ul>
+</body>
+</html>

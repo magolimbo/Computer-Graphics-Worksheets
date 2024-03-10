@@ -1,0 +1,32 @@
+-Nearest Filtering (gl.NEAREST): Selects the nearest texel for sampling, creating a pixelated appearance.
+
+    -influence on magnification: Results in a blocky, pixelated look when textures are magnified.
+    -influence on minification: Can produce staircase artifacts, leading to jagged edges when textures are minified.
+
+
+
+-Linear Filtering (gl.LINEAR): Calculates a weighted average of neighboring texels for smoother transitions
+
+    -influence on magnification: Provides a smoother appearance during texture magnification.
+    -influence on minification: Reduces aliasing artifacts. However Linear filtering has little effect on minification issues 
+
+
+
+-Nearest Mipmap Nearest (gl.NEAREST_MIPMAP_NEAREST): Selects the nearest mipmap level and uses the nearest texel within that level for sampling.
+
+    -influence on minification: Reduces aliasing for minified textures by selecting appropriate mipmaps based on distance.
+
+
+-Linear Mipmap Nearest (gl.LINEAR_MIPMAP_NEAREST): Applies linear interpolation within the nearest mipmap level for smoother transitions.
+
+    -influence on minification: Reduces aliasing for minified textures by smoothly transitioning between mipmaps.
+
+
+-Nearest Mipmap Linear (gl.NEAREST_MIPMAP_LINEAR): Selects the nearest mipmap level and applies linear interpolation within that level.
+
+    -influence on minification: Smoothens texture transitions during minification by blending texels in mipmaps.
+
+
+-Linear Mipmap Linear (gl.LINEAR_MIPMAP_LINEAR): Combines linear filtering between texels and linear interpolation between mipmap levels.
+
+    -influence on minification: Offers the best quality for minified textures, reducing aliasing issues.

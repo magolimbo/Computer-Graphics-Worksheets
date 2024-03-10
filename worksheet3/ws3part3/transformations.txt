@@ -1,0 +1,39 @@
+Reflect on the theory of affine transformations and viewing
+transformations by doing the following:
+• List the transformation matrices that you used in Parts 1 and 2
+(use general expressions/functions rather than concrete
+numbers). [Angel 4.9, 5.3-5.5]
+• For each cube, write down a formula showing how the matrices
+were concatenated to become the current transformation matrix
+(CTM) that was used to transform the vertices in the vertex
+shader. [Angel 4.10-4.11]
+----------------------------------------------------------------------------
+
+Part 1:   
+    -View Matrix (V):  V = lookAt(eye, at, up)
+    -Projection Matrix (P): not explicitly defined (the default orthographic projection has been used)
+    -Model Matrix (M): not explicitly defined (default cube)
+
+    The CTM is calculated as follows: CTM = V 
+
+
+Part 2:
+    Cube 1 (1 point perspective):
+        -View Matrix (V): V = lookAt(eye, at, up)
+        -Projection Matrix (P): P = perspective(fovy, aspect, near, far);
+        -Model Matrix (M): M = mat4(1);
+
+    Cube 2 (2 point perspective):
+        -View Matrix (V): V = translate(-1.5, 0.0, 0.0)
+        -Projection Matrix (P): P = perspective(fovy, aspect, near, far);
+        -Model Matrix (M): M = mat4(1);
+
+    Cube 3 (3 point perspective):
+        -View Matrix (V): V = mult(mult(rotateX(angx), rotateY(angY)), translate(x,y,z))
+        -Projection Matrix (P): P = perspective(fovy, aspect, near, far);
+        -Model Matrix (M): M = mat4(1);
+    
+
+    The CTM is calculated as follows: CTM = P * V * M
+
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec3 vPosition;
+        attribute vec2 texPosition;
+        
+        uniform mat4 M;
+        uniform mat4 V;
+        uniform mat4 P;
+
+        varying vec2 fTexCoord;
+
+        void main() {
+
+            fTexCoord = texPosition;
+            gl_Position = P * V * M * vec4( vPosition, 1.0 );
+        }
+        
+
+
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform sampler2D texture;
+        varying vec2 fTexCoord;        
+
+        void main() {
+            
+            gl_FragColor = texture2D(texture, fTexCoord);
+        }
+    </script>
+    <script type="text/javascript" src="../common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../common/initShaders.js"></script>
+    <script type="text/javascript" src="../common/MV.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <!--<script type="text/javascript" src="gasket1.js"></script>-->
+    <body>
+        <canvas id="gl-canvas" width="600" height="600">
+            <!-- The following message is displayed if the browser doesn’t
+            -- support HTML5 -->
+            Sorry; your web browser does not support HTML5's canvas element.
+        </canvas><br>
+    
+    <button id = "orbit"> ORBIT </button>
+    </body>
+</html>

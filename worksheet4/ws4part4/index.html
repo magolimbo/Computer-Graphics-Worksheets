@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html><body> 
+<canvas id="c" width="512" height="512"></canvas>
+
+
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="../common/webgl-utils.js"></script>
+<script type="text/javascript" src="../common/initShaders.js"></script>
+<script type="text/javascript" src="../common/MV.js"></script>
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+    attribute vec4 a_Position;
+    attribute vec4 a_Color;
+    attribute vec4 a_Normal;
+
+    varying vec4 pos;
+    varying vec4 color;
+    varying vec4 fPosition;
+
+    uniform vec4 lightDirection; 
+ 
+    uniform vec4 ka;
+    uniform vec4 kd;
+    uniform vec4 ks;
+    uniform float s;
+    uniform vec4 Le;
+
+
+    uniform mat4 V;
+    uniform mat4 P;
+    uniform mat4 M; 
+    
+    //note: in this ex. Le = La = Li
+    void main() {
+    
+        vec3 pos = (V * M * a_Position).xyz;
+        vec3 light = (V * M * lightDirection).xyz;
+        vec3 w_i = lightDirection.w == 0.0 ? normalize(-light) : normalize(light - pos);  
+        vec3 normal = normalize((V * M * a_Normal).xyz);  // Normalizza la normale
+
+        //vec3 wo = - normalize(pos);
+        //vec3 wr = normalize(2.0 * dot(w_i, normal) * normal - w_i);
+        //wr = reflect(w_i, normal);
+        //vec3 wh = normalize(w_i + wo);
+
+        vec3 wo = normalize(-pos);  
+        vec3 wr = normalize(reflect(-w_i , normal));
+
+        vec4 diffuseColor = kd * Le * max(dot(normal, w_i), 0.0) ; // Calcolo del colore diffuso
+        vec4 ambientColor = ka * Le;
+        vec4 specularColor = ks * Le * pow(max (dot (wr, wo), 0.0 ), s );
+
+        if(max(dot(normal, w_i), 0.0) < 0.0){
+            specularColor = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+    
+        color = diffuseColor + ambientColor + specularColor;
+        color.a = 1.0;
+
+        gl_Position = P * V * M * a_Position;
+        gl_PointSize = 10.0; 
+        fPosition = a_Position;
+
+
+
+    }
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float; 
+        varying vec4 color;
+        varying vec4 fPosition;
+        
+        void main() {
+        gl_FragColor = color * (fPosition * 0.5 + 0.5);
+
+        }
+        </script>
+
+    <div id="buttonContainer">
+        <button id="incrementSubd">Increment Subdivisions</button>
+        <button id="decrementSubd">Decrement Subdivisions</button>
+        <button id="sphereRotation">Sphere Rotation</button>
+    </div>
+
+    <div id="sliderContainer">
+        <label for="slider1">Ka (ambient reflection coeff.)</label>
+        <input type="range" id="slide_ka" min="0" max="1" step="0.1" value="0.4">
+    
+        <label for="slider2">Kd (diffuse reflection coeff.)</label>
+        <input type="range" id="slide_kd" min="0" max="1" step="0.1" value="1.0">
+    
+        <label for="slider3">Ks (specular reflection coeff.)</label>
+        <input type="range" id="slide_ks" min="0" max="1" step="0.1" value="1">
+    
+        <label for="slider4">s (shininess)</label>
+        <input type="range" id="slide_s" min="10" max="200" step="1" value="200">
+    
+        <label for="slider5">Le (Light emission)</label>
+        <input type="range" id="slide_le" min="0" max="2" step="0.1" value="0.5">
+      </div>
+
+</body></html>

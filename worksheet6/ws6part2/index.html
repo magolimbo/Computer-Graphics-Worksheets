@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec3 vPosition;
+        attribute vec2 vTexCoord;
+        varying vec2 fTexCoord;
+
+        uniform mat4 M;
+        uniform mat4 V;
+        uniform mat4 P;
+        void main() {
+            fTexCoord = vTexCoord;
+            gl_Position = P*V*M*vec4(vPosition,1.0);
+            
+        }
+        
+
+
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform sampler2D texMap;
+        varying vec2 fTexCoord;
+        void main() {
+            gl_FragColor = texture2D(texMap, fTexCoord);
+        }
+    </script>
+    <script type="text/javascript" src="../common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../common/initShaders.js"></script>
+    <script type="text/javascript" src="../common/MV.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <!--<script type="text/javascript" src="gasket1.js"></script>-->
+    <body>
+        <canvas id="gl-canvas" width="512" height="512">
+            <!-- The following message is displayed if the browser doesn’t
+            -- support HTML5 -->
+            Sorry; your web browser does not support HTML5's canvas element.
+        </canvas><br>
+        Select texture wrapping mode:<br>
+        <select id="textureWrapMode" size="2">
+            <option value="0">Repeat</option>
+            <option value="1">Clamp to edge</option>
+        </select><br>
+        Select texture filtering mode:<br>
+        <select id="textureFilterMode" size="6">
+            <option value="0">Nearest</option>
+            <option value="1">Linear</option>
+            <option value="2">Nearest mipmap nearest</option>
+            <option value="3">Linear mipmap nearest</option>
+            <option value="4">Nearest mipmap linear</option>
+            <option value="5">Linear mipmap linear</option>
+        </select>
+
+    <div>
+    <h3>
+        Explain the effect of the different filtering modes and their influence on
+texture magnification and minification issues
+    </h3>
+        <h4>Nearest Filtering (gl.NEAREST):</h4>
+    <p> Selects the nearest texel for sampling, creating a pixelated appearance.</p>
+    <ul>
+        <li> Influence on magnification: Results in a blocky, pixelated look when textures are magnified.</li>
+        <li> Influence on minification: Can produce staircase artifacts, leading to jagged edges when textures are minified.</li>
+    </ul>
+
+    <h4>Linear Filtering (gl.LINEAR):</h4>
+    <p>Calculates a weighted average of neighboring texels for smoother transitions.</p>
+    <ul>
+        <li>Influence on magnification: Provides a smoother appearance during texture magnification.</li>
+        <li>Influence on minification: Reduces aliasing artifacts. However, Linear filtering has little effect on minification issues.</li>
+    </ul>
+
+    <h4>Nearest Mipmap Nearest (gl.NEAREST_MIPMAP_NEAREST):</h4>
+    <p>Selects the nearest mipmap level and uses the nearest texel within that level for sampling.</p>
+    <ul>
+        <li>Influence on minification: Reduces aliasing for minified textures by selecting appropriate mipmaps based on distance.</li>
+    </ul>
+
+    <h4>Linear Mipmap Nearest (gl.LINEAR_MIPMAP_NEAREST):</h4>
+    <p>Applies linear interpolation within the nearest mipmap level for smoother transitions.</p>
+    <ul>
+        <li>Influence on minification: Reduces aliasing for minified textures by smoothly transitioning between mipmaps.</li>
+    </ul>
+
+    <h4>Nearest Mipmap Linear (gl.NEAREST_MIPMAP_LINEAR):</h4>
+    <p>Selects the nearest mipmap level and applies linear interpolation within that level.</p>
+    <ul>
+        <li>Influence on minification: Smoothens texture transitions during minification by blending texels in mipmaps.</li>
+    </ul>
+
+    <h4>Linear Mipmap Linear (gl.LINEAR_MIPMAP_LINEAR):</h4>
+    <p>Combines linear filtering between texels and linear interpolation between mipmap levels.</p>
+    <ul>
+        <li>Influence on minification: Offers the best quality for minified textures, reducing aliasing issues.</li>
+    </ul>
+    </div>
+    </body>
+</html>

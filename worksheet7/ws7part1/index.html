@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        attribute vec4 vNormal;
+
+        varying vec4 f_Normal;
+        varying vec4 fragColor;
+        
+        uniform mat4 M;
+        uniform mat4 V;
+        uniform mat4 P;
+
+        uniform vec4 lightPosition;
+        uniform vec4 Ld;
+        uniform vec4 kd;
+
+
+        void main() {
+
+            vec3 pos = (V * M * vPosition).xyz;
+            vec3 N = normalize((V * M * vNormal).xyz);
+			
+            vec3 L = lightPosition.w == 0.0 ? normalize(lightPosition.xyz) : normalize(lightPosition.xyz - pos);
+
+            vec4 diffuseProduct = Ld * kd;
+			vec4 diffuse = diffuseProduct * max( dot(L, N), 0.0 );
+
+            gl_Position = P * V * M * vPosition;
+
+            fragColor = diffuse; //diffuse + vColor
+			fragColor.a = 1.0;
+            
+            f_Normal = vNormal;
+        }
+        
+
+
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform samplerCube texMap;
+        varying vec4 fragColor;
+        varying vec4 f_Normal;
+        
+        
+
+        void main() {
+            
+            gl_FragColor = fragColor * textureCube(texMap, normalize(f_Normal.xyz) );
+        }
+    </script>
+    <script type="text/javascript" src="../common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../common/initShaders.js"></script>
+    <script type="text/javascript" src="../common/MV.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <!--<script type="text/javascript" src="gasket1.js"></script>-->
+    <body>
+        <canvas id="gl-canvas" width="600" height="600">
+            <!-- The following message is displayed if the browser doesn’t
+            -- support HTML5 -->
+            Sorry; your web browser does not support HTML5's canvas element.
+        </canvas><br>
+    </body>
+</html>

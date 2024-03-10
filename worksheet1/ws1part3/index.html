@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="c" height="512" width="512"></canvas>
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="../common/initShaders.js"></script>
+<script type="text/javascript" src="../common/MV.js"></script>
+<script type="text/javascript" src="../common/webgl-utils.js"></script>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 a_Position;
+    varying vec4 fColor;
+    void main() {
+        float distance = sqrt((a_Position.x - 1.0) * (a_Position.x - 1.0) + (a_Position.y - 1.0) * (a_Position.y - 1.0));
+        float green = 1.0 - max(abs(a_Position.x - 1.0), abs(a_Position.y - 0.0));
+        fColor = vec4(1.0-a_Position.x, green, 1.0-distance, 1.0); // Usa il valore calcolato come colore
+
+        gl_Position = a_Position;
+        gl_PointSize = 20.0;
+        }
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 fColor;
+
+    void main() {
+    gl_FragColor = fColor;
+    }
+    </script>
+</body>
+</html>

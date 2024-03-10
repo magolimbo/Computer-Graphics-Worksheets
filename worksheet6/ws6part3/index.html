@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        attribute vec4 vNormal;
+
+        varying vec4 f_Normal;
+        attribute vec4 vColor;
+        varying vec4 fragColor;
+        
+
+        uniform mat4 M;
+        uniform mat4 V;
+        uniform mat4 P;
+
+        uniform vec4 diffuseProduct;
+		uniform vec4 lightPosition;
+
+        void main() {
+            vec3 pos = (V*M*vPosition).xyz;
+			vec3 L;
+
+            // check for directional light
+			if (lightPosition.w == 0.0) 
+				L = normalize(lightPosition.xyz);
+			else 
+				L = normalize(lightPosition.xyz - pos);
+            
+            // use normalized position otherwise lightsource rotating with camera
+            vec3 N = normalize(vec4(vNormal.xyz, 0).xyz); 
+            
+            float Kd = max( dot(L, N), 0.0 ); // illumination equation
+			vec4 diffuse = Kd * diffuseProduct;
+
+
+            gl_Position = P*V*M*vPosition;
+            fragColor = diffuse;
+            // fragColor = vColor + diffuse;
+			fragColor.a = 1.0;
+            
+            f_Normal = vNormal;
+        }
+        
+
+
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform sampler2D texMap;
+        varying vec4 fragColor;
+        varying vec4 f_Normal;
+        
+        
+
+        void main() {
+            vec3 n = normalize(f_Normal.xyz);
+            float PI = 3.1415926535897932384626433832795;
+            float u = 1.0 -(atan(n.z, n.x)/(2.0*PI));
+            float v = acos(n.y)/PI;
+            gl_FragColor = texture2D(texMap, vec2(u,v));
+        }
+    </script>
+    <script type="text/javascript" src="../common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../common/initShaders.js"></script>
+    <script type="text/javascript" src="../common/MV.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <!--<script type="text/javascript" src="gasket1.js"></script>-->
+    <body>
+        <canvas id="gl-canvas" width="600" height="600">
+            <!-- The following message is displayed if the browser doesn’t
+            -- support HTML5 -->
+            Sorry; your web browser does not support HTML5's canvas element.
+        </canvas><br>
+    </body>
+</html>
